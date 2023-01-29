@@ -10,7 +10,7 @@ const auth = async (req, res, next) => {
   const [bearer, token] = authorization.split(" ");
 
   try {
-    if (bearer !== "Bearer") {
+    if (!token || bearer !== "Bearer") {
       throw createError(401, "Not authorized");
     }
     const { id } = jwt.verify(token, SECRET_KEY);
