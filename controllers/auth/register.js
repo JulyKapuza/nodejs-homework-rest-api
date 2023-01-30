@@ -1,5 +1,6 @@
-const { User } = require("../../models");
 const createError = require("http-errors");
+const gravatar = require("gravatar");
+const { User } = require("../../models");
 
 /* -------------------------------------------------------------------------- */
 /*                          @ POST / api / users /register                    */
@@ -12,8 +13,8 @@ const register = async (req, res) => {
   if (user) {
     throw createError(409, "Email in use");
   }
-
-  const newUser = new User({ email, subscription });
+  const avatarURL = gravatar.url(email);
+  const newUser = new User({ email, subscription, avatarURL });
   newUser.setPassword(password);
   newUser.save();
 
@@ -24,6 +25,7 @@ const register = async (req, res) => {
       user: {
         email,
         subscription,
+        avatarURL,
       },
     },
   });
