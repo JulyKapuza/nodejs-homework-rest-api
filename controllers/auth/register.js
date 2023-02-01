@@ -1,6 +1,10 @@
 const createError = require("http-errors");
 const gravatar = require("gravatar");
+const {uid} = require('uid')
 const { User } = require("../../models");
+
+
+const { sendEmail } = require("../../helpers");
 
 /* -------------------------------------------------------------------------- */
 /*                          @ POST / api / users /register                    */
@@ -14,9 +18,25 @@ const register = async (req, res) => {
     throw createError(409, "Email in use");
   }
   const avatarURL = gravatar.url(email);
-  const newUser = new User({ email, subscription, avatarURL });
+  const verificationToken = uid(15);
+
+  const newUser = new User({
+    email,
+    subscription,
+    avatarURL,
+    verificationToken,
+  });
+  
   newUser.setPassword(password);
   newUser.save();
+  
+  const mail = {
+    to: email,
+    subject: "Сonfirmation of registration",
+    html: `<a href="http/localhost:3000/api/users/verify/${verificationToken}" target="_blank">Click to confirm</a>`,
+  };
+
+  await sendEmail(mail);
 
   res.status(201).json({
     status: "success",
