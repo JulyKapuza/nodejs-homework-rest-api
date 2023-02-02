@@ -4,7 +4,7 @@ const {uid} = require('uid')
 const { User } = require("../../models");
 
 
-const { sendEmail } = require("../../helpers");
+const { sendEmail } = require("../../services");
 
 /* -------------------------------------------------------------------------- */
 /*                          @ POST / api / users /register                    */
